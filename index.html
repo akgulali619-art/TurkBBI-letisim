@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohbet Uygulaması</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- GİRİŞ EKRANI -->
+    <div id="login-screen" class="screen active">
+        <div class="login-box">
+            <i class="fas fa-comments logo"></i>
+            <h1>Sohbet Uygulaması</h1>
+            <form id="login-form">
+                <input type="text" id="username-input" placeholder="Kullanıcı adınız" maxlength="20" required>
+                <div id="login-error" class="error hidden"></div>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SOHBET EKRANI -->
+    <div id="chat-screen" class="screen">
+        <div class="chat-layout">
+            <!-- SOL: KULLANICI LİSTESİ -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="fas fa-users"></i> Çevrimiçi (<span id="online-count">0</span>)</h3>
+                </div>
+                <div id="user-list" class="user-list"></div>
+                <div class="sidebar-footer">
+                    <span id="my-username"></span>
+                    <button id="logout-btn" title="Çıkış"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </aside>
+
+            <!-- SAĞ: SOHBET ALANI -->
+            <main class="chat-area">
+                <header class="chat-header">
+                    <h2>Genel Sohbet</h2>
+                    <span id="typing-indicator" class="hidden"></span>
+                </header>
+
+                <!-- MESAJLAR -->
+                <div id="messages" class="messages"></div>
+
+                <!-- MESAJ GÖNDERİM -->
+                <footer class="chat-input">
+                    <div id="image-preview" class="image-preview hidden">
+                        <img id="preview-img" src="">
+                        <button id="cancel-image"><i class="fas fa-times"></i></button>
+                    </div>
+                    
+                    <!-- Sesli mesaj kaydediliyor -->
+                    <div id="voice-recording" class="voice-recording hidden">
+                        <div class="recording-indicator">
+                            <i class="fas fa-circle recording-dot"></i>
+                            <span id="recording-time">0:00</span>
+                        </div>
+                        <div class="recording-actions">
+                            <button id="stop-recording" class="stop-rec-btn" title="Gönder">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button id="cancel-recording" class="cancel-rec-btn" title="İptal">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <form id="message-form">
+                        <label for="image-input" class="attach-btn" title="Fotoğraf"><i class="fas fa-image"></i></label>
+                        <input type="file" id="image-input" accept="image/*" hidden>
+                        
+                        <button type="button" id="voice-btn" class="voice-btn" title="Sesli Mesaj (Basılı Tut)">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        
+                        <input type="text" id="message-input" placeholder="Mesajınızı yazın..." maxlength="1000">
+                        <button type="submit" title="Gönder"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- ARAMA MODALI -->
+    <div id="call-modal" class="modal hidden">
+        <div class="modal-box call-box">
+            <h3 id="call-status">Aranıyor...</h3>
+            <p id="call-username"></p>
+            <div class="video-wrapper">
+                <video id="remote-video" autoplay playsinline></video>
+                <video id="local-video" autoplay playsinline muted></video>
+            </div>
+            <div class="call-controls">
+                <button id="toggle-mic" class="active"><i class="fas fa-microphone"></i></button>
+                <button id="toggle-camera" class="active"><i class="fas fa-video"></i></button>
+                <button id="share-screen" class="share-screen-btn" title="Ekran Paylaş"><i class="fas fa-desktop"></i></button>
+                <button id="end-call" class="end"><i class="fas fa-phone-slash"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GELEN ARAMA -->
+    <div id="incoming-modal" class="modal hidden">
+        <div class="modal-box incoming-box">
+            <i class="fas fa-phone-volume ringing"></i>
+            <h3>Gelen Arama</h3>
+            <p id="caller-name"></p>
+            <p id="call-type-text"></p>
+            <div class="incoming-btns">
+                <button id="accept-call" class="accept"><i class="fas fa-phone"></i> Kabul</button>
+                <button id="reject-call" class="reject"><i class="fas fa-phone-slash"></i> Reddet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KULLANICI SEÇME (ARAMA İÇİN) -->
+    <div id="user-select-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="select-title">Kullanıcı Seç</h3>
+                <button id="close-select"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="selectable-users"></div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
